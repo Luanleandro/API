@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models import atividade_model
 from clients.pessoa_service_client import PessoaServiceClient
+
 
 atividade_bp = Blueprint('atividade_bp', __name__)
 
@@ -30,7 +31,7 @@ def obter_atividade_para_professor(id_atividade, id_professor):
 
 @atividade_bp.route("/", methods=["POST"])
 def criar_atividade():
-    dados = request.get_json()
+    dados = request.json
     try:
         nova_atividade = atividade_model.criar_atividade(dados)
         return jsonify(nova_atividade)
@@ -51,7 +52,7 @@ def atualizar_atividade(id_atividade):
 def excluir_atividade(id_atividade):
     try:
         atividade_model.excluir_atividade(id_atividade)
-        return jsonify({'mensagem': 'Atividade excluída com sucesso'}),
+        return jsonify({'mensagem': 'Atividade excluída com sucesso'})
     except atividade_model.AtividadeNotFound:
         return jsonify({'erro': 'Atividade não encontrada'})
     except Exception as e:
